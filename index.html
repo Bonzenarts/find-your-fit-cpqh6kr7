@@ -1,0 +1,617 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#2E5E43">
+<title>Find Your Fit</title>
+<style>
+:root{--fs:18;--bg:#FAFAF7;--side:#E7EDE4;--card:#FFFFFF;--ink:#22333B;--muted:#4A5563;--line:#E1E5DF;--track:#E4E7E3;--primary:#2E5E43;--primaryink:#FFFFFF;--chipbg:#F2F4F1;--sel:#E3F0E6;--warn:#8A4B00;--shadow:0 8px 30px rgba(34,51,59,.07)}
+html[data-theme="light"]{--bg:#FFFFFF;--side:#F1F5F1;--ink:#111111;--muted:#3D3D3D;--line:#B8B8B8;--track:#D0D0D0;--primary:#1F5A3C;--chipbg:#F1F1F1;--sel:#DDEFE3;--shadow:none}
+html[data-theme="dark"]{--bg:#14181C;--side:#1B2127;--card:#1F262D;--ink:#EEF2F0;--muted:#B5BFC7;--line:#364049;--track:#364049;--primary:#7FC8A1;--primaryink:#0D1A14;--chipbg:#28313A;--sel:#24473B;--warn:#FFB866;--shadow:none}
+html{font-size:calc(var(--fs) * 1px);-webkit-text-size-adjust:100%}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,Roboto,Helvetica,Arial,sans-serif;line-height:1.6;letter-spacing:.01em;text-align:left}
+html.easy body{font-family:Verdana,Tahoma,Geneva,sans-serif;letter-spacing:.02em}
+button{font:inherit;color:inherit}
+.serif,h1{font-family:Georgia,"Iowan Old Style","Times New Roman",serif}
+
+/* layout */
+.shell{min-height:100vh}
+.side{display:none}
+.main{position:relative;max-width:46rem;width:100%;margin:0 auto;padding:.8rem 1rem 0;display:flex;flex-direction:column;min-height:100vh}
+@media (min-width:900px){
+  .shell{display:grid;grid-template-columns:21rem 1fr}
+  .side{display:flex;flex-direction:column;gap:1.2rem;background:var(--side);padding:2rem 1.6rem;position:sticky;top:0;height:100vh;overflow:auto}
+  .mbrand{display:none}
+  .main{padding:1.2rem 2rem 0}
+}
+.brand{display:flex;gap:.7rem;align-items:center;color:var(--primary)}
+.brand b{display:block;font-family:Georgia,serif;font-size:1.25rem;line-height:1.1;color:var(--ink)}
+.brand small{display:block;font-size:.58rem;letter-spacing:.14em;color:var(--muted)}
+.side .sh{font-family:Georgia,serif;font-size:1.7rem;line-height:1.2;margin:.4rem 0 0;color:var(--ink)}
+.side p{margin:0;font-size:.9rem;color:var(--muted)}
+.stepper{list-style:none;margin:.4rem 0;padding:0;display:grid;gap:.35rem}
+.stepper li{display:flex;gap:.7rem;align-items:center;font-size:.9rem;color:var(--muted);padding:.45rem .6rem;border-radius:12px}
+.stepper .dot{width:1.6rem;height:1.6rem;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-size:.8rem;flex:none;background:var(--card)}
+.stepper li.cur{background:var(--card);color:var(--ink);font-weight:600;box-shadow:var(--shadow)}
+.stepper li.cur .dot{border-color:var(--primary);color:var(--primary)}
+.stepper li.done .dot{background:var(--primary);border-color:var(--primary);color:var(--primaryink)}
+.side .note2{margin-top:auto;border-top:1px solid var(--line);padding-top:1rem}
+.side .quote{font-family:Georgia,serif;font-style:italic;font-size:1.05rem;color:var(--ink);margin-top:.8rem}
+
+.top{display:flex;align-items:center;gap:.6rem;min-height:2.6rem}
+.top .grow2{flex:1}
+.saved{font-size:.75rem;color:var(--primary);min-height:1rem}
+.ibtn{border:1.5px solid var(--line);background:var(--card);border-radius:999px;padding:.35rem .8rem;font-size:.8rem;cursor:pointer;min-height:2.4rem}
+.pop{position:absolute;right:1rem;top:3.6rem;z-index:30;width:min(21rem,calc(100vw - 2rem));background:var(--card);border:1px solid var(--line);border-radius:16px;padding:1rem;box-shadow:0 12px 40px rgba(0,0,0,.18)}
+@media (min-width:900px){.pop{right:2rem}}
+.pop h3{margin:0 0 .7rem;font-size:1rem}
+.pop .row{display:flex;gap:.4rem;flex-wrap:wrap;margin:.3rem 0 .9rem}
+.pop .lbl{font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.pop button{border:1.5px solid var(--line);background:var(--card);border-radius:10px;min-height:2.6rem;padding:.3rem .8rem;cursor:pointer;font-size:.85rem}
+.pop button[aria-pressed="true"]{background:var(--primary);color:var(--primaryink);border-color:var(--primary);font-weight:700}
+
+/* progress */
+.prog{margin:.5rem 0 1rem}
+.prow{display:flex;justify-content:space-between;font-size:.8rem;color:var(--muted);margin-bottom:.4rem}
+.prow b{color:var(--ink)}
+.segs{display:flex;gap:6px}
+.seg{flex:1;height:8px;border-radius:99px;background:var(--track);overflow:hidden}
+.seg i{display:block;height:100%;background:var(--primary);border-radius:99px;transition:width .3s}
+
+/* card */
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:1.4rem 1.2rem;box-shadow:var(--shadow)}
+.card.enter{animation:rise .22s ease-out}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.card.enter{animation:none}.seg i{transition:none}*{scroll-behavior:auto!important}}
+@media (min-width:900px){.card{padding:1.8rem 2rem}}
+.chead{display:flex;gap:.8rem;align-items:center;flex-wrap:wrap}
+.chip{width:2.6rem;height:2.6rem;border-radius:50%;background:var(--side);display:grid;place-items:center;font-size:1.2rem;flex:none}
+.ctext{flex:1;min-width:10rem}
+.ctitle{font-weight:650;font-size:.95rem}
+.csub{font-size:.8rem;color:var(--muted)}
+.qcount{font-size:.78rem;color:var(--muted);white-space:nowrap;background:var(--chipbg);padding:.2rem .7rem;border-radius:99px}
+h1{font-size:1.9rem;line-height:1.2;margin:.2rem 0 .7rem;font-weight:700}
+h2.qtext{font-size:1.35rem;line-height:1.35;font-weight:650;margin:1.2rem 0 .6rem}
+h1:focus,h2:focus{outline:none}
+p{margin:.45rem 0}
+.hint{color:var(--muted);font-size:.88rem;margin:.2rem 0 .6rem}
+.pills{margin:.2rem 0 1rem;min-height:1.6rem}
+.pill{display:inline-block;font-size:.75rem;padding:.2rem .65rem;border-radius:99px;background:var(--chipbg);color:var(--muted);margin:0 .4rem .3rem 0}
+.pill.live{background:var(--sel);color:var(--primary);font-weight:700}
+.note{color:var(--warn);font-size:.85rem;min-height:1.3rem;margin:.5rem 0 0}
+
+/* options */
+.opts{display:grid;gap:.6rem}
+@media (min-width:640px){.opts.two{grid-template-columns:1fr 1fr}}
+.opt{display:flex;align-items:center;gap:.7rem;width:100%;min-height:3.5rem;padding:.6rem .8rem;border:1.5px solid var(--line);background:var(--card);border-radius:12px;font-size:.95rem;text-align:left;cursor:pointer;transition:border-color .15s,background .15s,transform .06s}
+.opt:hover{border-color:var(--primary)}
+.opt:active{transform:scale(.99)}
+.opt .emo{width:2.2rem;height:2.2rem;border-radius:10px;background:var(--chipbg);display:grid;place-items:center;font-size:1.2rem;flex:none}
+.opt .lab{flex:1}
+.opt .tick{width:1.6rem;height:1.6rem;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-size:.85rem;font-weight:700;color:transparent;flex:none}
+.opt.multi .tick{border-radius:7px}
+.opt[aria-checked="true"]{border-color:var(--primary);background:var(--sel)}
+.opt[aria-checked="true"] .tick{background:var(--primary);border-color:var(--primary);color:var(--primaryink)}
+.opt[disabled]{opacity:.45;cursor:not-allowed}
+.item{border:1px solid var(--line);border-radius:14px;padding:.8rem .9rem;margin-bottom:.7rem}
+.ihead{display:flex;justify-content:space-between;gap:.6rem;align-items:flex-start}
+.ihead p{margin:0;font-size:.95rem;font-weight:600}
+.tag{font-size:.72rem;background:var(--sel);color:var(--primary);padding:.15rem .6rem;border-radius:99px;white-space:nowrap;font-weight:700}
+.slabel{font-size:.78rem;color:var(--muted);margin:.6rem 0 .3rem}
+.sg{display:flex;flex-wrap:wrap;gap:.4rem}
+.segbtn{flex:1 1 7rem;min-height:2.8rem;border:1.5px solid var(--line);background:var(--card);border-radius:10px;font-size:.83rem;cursor:pointer;padding:.3rem .5rem}
+.segbtn:hover{border-color:var(--primary)}
+.segbtn[aria-pressed="true"]{background:var(--primary);color:var(--primaryink);border-color:var(--primary);font-weight:700}
+textarea{width:100%;min-height:9rem;font:inherit;font-size:.95rem;padding:.8rem .9rem;color:var(--ink);background:var(--card);border:1.5px solid var(--line);border-radius:12px;resize:vertical;line-height:1.6}
+.cnt{text-align:right;font-size:.75rem;color:var(--muted)}
+:focus-visible{outline:3px solid var(--primary);outline-offset:2px}
+
+/* nav */
+.nav{position:sticky;bottom:0;margin-top:auto;padding:.9rem 0 calc(.9rem + env(safe-area-inset-bottom));background:linear-gradient(to top,var(--bg) 75%,transparent)}
+.nav .in{display:flex;gap:.6rem;align-items:center}
+.nav button{min-height:3.2rem;border-radius:12px;border:1.5px solid var(--primary);background:var(--card);color:var(--primary);padding:.5rem 1.1rem;font-size:.95rem;cursor:pointer;font-weight:600}
+.nav .grow{flex:1;background:var(--primary);color:var(--primaryink)}
+.nav .skip,.nav .stop{border-color:transparent;background:transparent;color:var(--muted);text-decoration:underline;font-weight:500;padding:.5rem .6rem}
+.foot{font-size:.75rem;color:var(--muted);text-align:center;margin:.9rem 0 .2rem}
+
+/* intro / done / break */
+.feat{display:flex;gap:.8rem;margin:1rem 0;align-items:flex-start}
+.feat b{display:block;font-size:.95rem}
+.feat span.s{font-size:.82rem;color:var(--muted)}
+.cta{display:block;width:100%;min-height:3.4rem;border-radius:12px;border:1.5px solid var(--primary);background:var(--primary);color:var(--primaryink);font-weight:700;font-size:1rem;cursor:pointer;margin:.6rem 0 .3rem}
+.cta.alt{background:var(--card);color:var(--primary)}
+.ring{--p:0;width:8rem;height:8rem;border-radius:50%;background:conic-gradient(var(--primary) calc(var(--p) * 1%),var(--track) 0);display:grid;place-items:center;margin:1.2rem auto}
+.ring span{width:6.3rem;height:6.3rem;border-radius:50%;background:var(--card);display:grid;place-items:center;font-weight:700;font-size:1.3rem}
+.center{text-align:center}
+.sumgrp{margin:1rem 0}
+.sumgrp b{display:block;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:.4rem}
+.chipl{display:inline-block;background:var(--sel);border-radius:99px;padding:.25rem .75rem;margin:0 .35rem .35rem 0;font-size:.85rem}
+.priv{display:flex;gap:.7rem;align-items:flex-start;background:var(--sel);border-radius:14px;padding:.8rem 1rem;margin:1rem 0;font-size:.88rem}
+details{margin:.8rem 0}
+summary{cursor:pointer;font-size:.9rem;color:var(--primary)}
+pre{white-space:pre-wrap;word-break:break-word;font-size:.75rem;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:.7rem;max-height:18rem;overflow:auto}
+.small{font-size:.8rem;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="side" aria-label="About this questionnaire">
+    <div class="brand">
+      <svg class="logo" viewBox="0 0 32 32" width="34" height="34" aria-hidden="true"><path d="M16 29V13" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/><path d="M16 14C16 8 11 5 5 5c0 6 4 10 11 9z" fill="currentColor"/><path d="M16 18c0-5 4-8 11-8 0 6-4 9-11 8z" fill="currentColor" opacity=".7"/></svg>
+      <div><b>Find Your Fit</b><small>YOUR GOALS · YOUR STRENGTHS · YOUR NEXT STEP</small></div>
+    </div>
+    <div class="sh">A few easy questions, just about you</div>
+    <p>We are looking for ideas that fit your life, your strengths and what you really want. Not the other way round.</p>
+    <ol id="stepper" class="stepper" aria-label="Your progress"></ol>
+    <div class="note2">
+      <p>🔒 Your answers stay on this device until you choose to share them.</p>
+      <p class="quote">“There are no wrong answers. Small steps count.”</p>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="top">
+      <div class="brand mbrand">
+        <svg class="logo" viewBox="0 0 32 32" width="28" height="28" aria-hidden="true"><path d="M16 29V13" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/><path d="M16 14C16 8 11 5 5 5c0 6 4 10 11 9z" fill="currentColor"/><path d="M16 18c0-5 4-8 11-8 0 6-4 9-11 8z" fill="currentColor" opacity=".7"/></svg>
+        <div><b>Find Your Fit</b></div>
+      </div>
+      <span class="grow2"></span>
+      <span id="saved" class="saved" role="status"></span>
+      <button id="tset" class="ibtn" type="button" aria-haspopup="dialog" aria-label="Display settings">Aa Display</button>
+    </header>
+    <div id="settings" class="pop" role="dialog" aria-label="Display settings" hidden>
+      <h3>Make it comfortable</h3>
+      <div class="lbl">Text size</div>
+      <div class="row"><button id="tsm" type="button" aria-label="Smaller text">A−</button><button id="tlg" type="button" aria-label="Bigger text">A+</button></div>
+      <div class="lbl">Colours</div>
+      <div class="row"><button id="th-soft" type="button" aria-pressed="true">Soft</button><button id="th-light" type="button" aria-pressed="false">Bright</button><button id="th-dark" type="button" aria-pressed="false">Dark</button></div>
+      <div class="lbl">Reading</div>
+      <div class="row"><button id="tfont" type="button" aria-pressed="false">Easy-read font</button><button id="tsp" type="button" hidden>🔊 Read to me</button></div>
+      <button id="tclose" type="button">Done</button>
+    </div>
+    <div id="progress" class="prog" hidden></div>
+    <main id="app" class="card" aria-live="polite"></main>
+    <p class="foot">🔒 Your answers are saved on this device only. Nothing is sent until you choose to share them.</p>
+    <div id="navhost"></div>
+  </div>
+</div>
+<noscript><p style="padding:1rem">This page needs JavaScript switched on to work.</p></noscript>
+
+<script>
+(() => {
+"use strict";
+const KEY = "interview-v3", PKEY = "interview-prefs-v2";
+
+const SCALES = {
+  skill: {expert:"💪 Very confident", ok:"🙂 I can do it", help:"🌱 Would need help", never:"🚫 Never tried"}
+};
+const WANT = {love:"😍 Love it", fine:"🙂 Okay", no:"🙅 No thanks"};
+const CAN  = {yes:"💪 Yes, I could", help:"🌱 With some help", no:"🚫 Not really"};
+
+const PARTS = [
+ {n:1, title:"You and your life", sub:"Let’s start with what matters to you.", icon:"🌿"},
+ {n:2, title:"What you can do", sub:"Your strengths, honestly rated. Nobody is marking this.", icon:"💪"},
+ {n:3, title:"How you work best", sub:"So any plan fits your real days.", icon:"☀️"},
+ {n:4, title:"Earning, in a way that fits", sub:"Where what you want meets what you can do.", icon:"🧩"},
+ {n:5, title:"Putting it together", sub:"Nearly there. Just a few last thoughts.", icon:"✨"}
+];
+
+const Q = [
+ // ================= PART 1: You and your life =================
+ {id:"flow", s:"Part 1: You and your life", t:"When does time seem to disappear for you? What are you doing?", type:"multi", max:3,
+  o:["🎨 Making or designing something","🌱 Gardening or plants","🍳 Cooking or baking","📸 Taking or editing photos","🧩 Puzzles or solving a problem","📖 Reading or learning","🐶 Looking after animals","🏡 Decorating or tidying a space","💬 Deep chats with someone","🎮 Gaming or watching shows","🛍️ Hunting for bargains or ideas","👶 Playing with or caring for little ones","🎵 Music or dancing","✂️ Crafts or sewing"]},
+ {id:"life_goals", s:"Part 1: You and your life", t:"Which of these matter most to you over the next 5 years?", hint:"Think about life, not just money.", type:"multi", max:3,
+  o:["👶 Being a present, hands-on mum","🏡 A happy, secure home","💷 Financial stability","🪞 Having something of my own, beyond being a mum","💪 Feeling capable and confident","🎨 Creative fulfilment","👯 Close friends and community","🌿 Health and wellbeing","✈️ Travel and experiences","🤲 Helping other people","👨‍👩‍👧 Growing our family","🌱 A garden or space of our own"]},
+ {id:"ten_year", s:"Part 1: You and your life", t:"Ten years from now, which life sounds most like the one you would love?", type:"single",
+  o:["🏡 Mostly home with family, with a small flexible income","🧩 A part-time job I enjoy, plus lots of family time","✨ My own small business, run on my own terms","🏆 A career I am proud of","🌈 A mix, and I am not sure yet"]},
+ {id:"ideal_day", s:"Part 1: You and your life", t:"What would your ideal day be mostly made of?", type:"multi", max:3,
+  o:["👶 Time with my child","🌳 Being outdoors","🎨 Making or creating","💬 Talking with people","📚 Learning something","🗂️ Organising and tidying","🤲 Helping someone","🧘 Quiet time for me","🏃 Exercise","🍳 Cooking","🏡 Pottering at home","👯 Seeing friends or family"]},
+ {id:"scenario", s:"Part 1: You and your life", t:"Which of these little pictures makes you think, “yes, I would like that”?", hint:"Go with your gut.", type:"single",
+  o:["☕ Mornings with my little one, then an hour at the kitchen table replying to happy customers","📦 A shelf of lovely things I made, packed up when the baby naps","💬 Running a friendly online group for new parents","🔍 Checking and approving products before they go live, with a cuppa","📸 Out and about, taking photos and meeting local people","🌱 Growing plants or baking, and selling a little of it","🎓 Showing people how to do something I am good at","🏡 Mostly at home with family, with just a small side income"]},
+ {id:"identity", s:"Part 1: You and your life", t:"When someone asks what you do, what would you most love to say?", type:"single",
+  o:["👶 I am a mum, and I run a little business","🤲 I help people with something I know about","🎨 I make things people love","🏢 I work in a job I enjoy","🏡 I am at home with my family, and that is enough","🤷 I am not sure yet"]},
+ {id:"proud", s:"Part 1: You and your life", t:"What have you felt proudest of in your life?", type:"multi", max:3,
+  o:["🤝 Helping someone through something hard","🎨 Finishing something creative","👏 Being praised for my work","📚 Learning something I found difficult","💛 Looking after someone well","🏡 Making a home feel lovely","⭐ Being someone people can rely on","💪 Getting through a tough time","🌟 Something else"]},
+ {id:"motivators", s:"Part 1: You and your life", t:"What motivates you most?", type:"multi", max:3,
+  o:["🤲 Helping other people","🎨 Being creative","🛟 Feeling secure and stable","👏 Being appreciated","🕊️ Having freedom and independence","📚 Learning new things","💷 Earning money","📆 Having a clear routine","🫂 Being part of a team","🏆 Building something that lasts"]},
+ {id:"drain", s:"Part 1: You and your life", t:"What drains you fastest?", type:"multi", max:3,
+  o:["🔔 Constant interruptions","🔊 Noisy places","👥 Lots of people at once","⏰ Being rushed","❓ Unclear instructions","🔁 Doing the same thing again and again","✍️ Writing and paperwork","🖥️ Long stretches on a screen","🔀 Switching between lots of tasks","🔍 Feeling judged or checked","🔢 Numbers and money"]},
+
+ // ================= PART 2: What you can do =================
+ {id:"s_tech", s:"Part 2: What you can do", t:"Tech and screens: how confident are you?", hint:"Tap one answer for each. Be honest, nobody is marking this.", type:"rate", scale:"skill",
+  o:["Using apps on a phone or tablet","Uploading photos and files","Making a simple design in an app like Canva","Using a spreadsheet to add things up","Using an online shop dashboard (like Etsy)","Video calls"]},
+ {id:"s_people", s:"Part 2: What you can do", t:"People: how confident are you?", hint:"Tap one answer for each.", type:"rate", scale:"skill",
+  o:["Explaining something clearly","Calming someone who is upset","Chatting with someone I do not know","Recommending things people will like","Working as part of a team"]},
+ {id:"s_creative", s:"Part 2: What you can do", t:"Making things: how confident are you?", hint:"Tap one answer for each.", type:"rate", scale:"skill",
+  o:["Drawing or designing","Taking good photos","Sewing, crafting or making things","Baking or cooking nicely","Decorating or styling a space"]},
+ {id:"s_organise", s:"Part 2: What you can do", t:"Organising: how confident are you?", hint:"Tap one answer for each.", type:"rate", scale:"skill",
+  o:["Keeping to a schedule","Following a process with lots of steps","Keeping track of orders or stock","Remembering details and dates","Planning an event or a trip","Spotting mistakes or things that look off"]},
+ {id:"asked_for", s:"Part 2: What you can do", t:"What do friends and family come to you for?", type:"multi", max:3,
+  o:["💬 Advice","🤗 Cheering them up","🗂️ Getting organised","🎨 Making things look nice","🛍️ Recommendations","😌 Calming them down","🔧 Practical fixes","📅 Remembering dates and details","🍰 Cooking or baking","👶 Parenting or childcare tips"]},
+ {id:"past_liked", s:"Part 2: What you can do", t:"Thinking about jobs and tasks you have done, what did you like best?", type:"multi", max:3,
+  o:["🤝 Working with people","🏃 Being busy and active","🎨 Creative tasks","💛 Looking after people","📋 A clear routine","👏 Being thanked or praised","🧩 Working things out","🌤️ Variety and change","🧘 A calm, quiet pace"]},
+
+ {id:"break1", type:"break", s:"Halfway", t:"Brilliant, you are about halfway! 🎉",
+  body:"You can carry on now, or stop here and come back later. Your answers are saved on this device."},
+
+ // ================= PART 3: How you work best =================
+ {id:"energy", s:"Part 3: How you work best", t:"When do you usually have the most energy?", type:"single",
+  o:["🌅 Morning","☀️ Afternoon","🌙 Evening","🎲 It changes from day to day"]},
+ {id:"hours_now", s:"Part 3: How you work best", t:"How many hours a week could you give to a project right now?", type:"single",
+  o:["1 to 3 hours","4 to 7 hours","8 to 12 hours","13 hours or more","Not sure yet"]},
+ {id:"hours_baby", s:"Part 3: How you work best", t:"And once the baby is here, what feels realistic?", type:"single",
+  o:["Very little","A few short bursts a week","Some regular hours","Not sure yet, and that is okay"]},
+ {id:"support", s:"Part 3: How you work best", t:"What helps you get things done?", type:"multi", max:3,
+  o:["✅ A visual checklist","🧑‍🤝‍🧑 Someone working alongside me","💬 A quick check-in","🖼️ Short instructions with pictures","🎥 A short video showing how","📄 A ready-made template","🙋 Being able to ask questions any time","⏰ A reminder","🎧 Music or a podcast on"]},
+ {id:"start", s:"Part 3: How you work best", t:"When you have a task to start, what usually gets in the way?", type:"multi", max:2,
+  o:["❓ Not knowing the first step","📚 Too many steps at once","😬 Worrying about getting it wrong","🔔 Being interrupted","🔋 Low energy","😴 Boredom","✨ Wanting it to be perfect","🤷 Nothing much"]},
+ {id:"avoid", s:"Part 3: How you work best", t:"Which of these would you rather avoid?", hint:"Tick as many as you like.", type:"multi", max:30, none:"👍 Nothing, I am open to most things",
+  o:["✍️ Lots of writing","🔢 Numbers and spreadsheets","📞 Phone calls","⏳ Tight deadlines","💷 Handling money","🖥️ Complicated software","🎥 Being on camera","📣 Posting on social media every day","🌍 Dealing with strangers online","👍 Nothing, I am open to most things"]},
+ {id:"non_neg", s:"Part 3: How you work best", t:"What must stay true, whatever we end up doing?", hint:"Your “non-negotiables”.", type:"multi", max:3,
+  o:["👶 I can be there for my child’s big moments","⏯️ I can stop and start easily","📆 I do not have to be “on” every day","🏡 I can work from home","⏳ No tight deadlines","🙂 No dealing with difficult people","🛡️ No big financial risk","🧘 Time for myself","👯 Time with family and friends"]},
+
+ // ================= PART 4: Earning, in a way that fits =================
+ {id:"money_meaning", s:"Part 4: Earning, in a way that fits", t:"What would earning money mean to you?", type:"multi", max:2,
+  o:["🛟 Security","🕊️ Independence","🤝 Contributing to our home","🧭 Freedom to choose","🏅 Proof that I can do it","🎁 Treats and small luxuries","😌 Not having to worry about bills"]},
+ {id:"income_vs_joy", s:"Part 4: Earning, in a way that fits", t:"Which is closest to how you feel?", type:"single",
+  o:["💷 Money matters most, I would do almost anything reasonable","⚖️ Money and enjoyment matter equally","🌸 Enjoyment matters more, even if it earns less","🤷 Not sure yet"]},
+ {id:"income_goal", s:"Part 4: Earning, in a way that fits", t:"What monthly amount would feel genuinely worthwhile to earn?", hint:"Just a feeling. No commitment.", type:"single",
+  o:["Under £100","£100 to £300","£300 to £600","£600 to £1,000","£1,000 or more","Not sure yet"]},
+ {id:"sell_exp", s:"Part 4: Earning, in a way that fits", t:"Have you ever earned money outside a normal job?", type:"single",
+  o:["✅ Yes, regularly","🌱 A few times","👀 No, but I would like to","🙅 No, and I am not keen"]},
+ {id:"topics", s:"Part 4: Earning, in a way that fits", t:"Which topics do you know a lot about, or could talk about for ages?", type:"multi", max:5, none:"None of these really",
+  o:["🤰 Pregnancy and new babies","🧒 Toddlers and young children","🐾 Pets and animals","🍪 Cooking and baking","🧵 Crafts and making","🧺 Home and organising","👗 Fashion and style","💄 Beauty and self-care","💍 Weddings and events","🌿 Plants and gardening","🏃 Health and fitness","🧠 Wellbeing and mental health","💷 Saving money and bargains","🎮 TV, games and fandoms","✈️ Travel","None of these really"]},
+ {id:"d_work1", s:"Part 4: Earning, in a way that fits", t:"Real kinds of work: customers and quality", hint:"For each one, tap an answer for “would I enjoy it?” and one for “could I do it?”.", type:"dual",
+  o:["Replying to customer messages","Checking products or designs before they go live","Running a friendly online group","Helping people choose the right thing for them"]},
+ {id:"d_work2", s:"Part 4: Earning, in a way that fits", t:"Real kinds of work: creating and organising", hint:"Tap one answer for each question.", type:"dual",
+  o:["Taking and editing product photos","Making simple designs from templates","Keeping a tracker of orders","Putting items up for sale from a template"]},
+ {id:"d_work3", s:"Part 4: Earning, in a way that fits", t:"Real kinds of work: sharing what you know", hint:"Tap one answer for each question.", type:"dual",
+  o:["Making simple how-to guides or checklists (with AI help)","Testing products and giving honest opinions","Growing or baking things to sell","Showing someone how to do something"]},
+
+ // ================= PART 5: Putting it together =================
+ {id:"success_year", s:"Part 5: Putting it together", t:"A year from now, what would make you say “that worked”?", type:"multi", max:2,
+  o:["💷 Earning a bit regularly","⭐ Making my first sale","💪 Feeling more confident","🧩 Having a project that is mine","😊 Enjoying what I do","👶 Still having plenty of time with my baby","📚 Having learned a new skill"]},
+ {id:"team", s:"Part 5: Putting it together", t:"How would you feel about working with Matthew on this?", type:"single",
+  o:["🤝 Great, as a team on the same thing","🧩 I would like my own part, with him building the tools","🌟 I would like my own project, with his help to set it up","🤷 Not sure yet"]},
+ {id:"accountability", s:"Part 5: Putting it together", t:"Who or what helps you stay motivated?", type:"multi", max:2,
+  o:["💑 Matthew","👯 A friend or family member","💻 An online group","🎓 A coach or mentor","📅 Regular check-ins","🎯 Seeing my own progress","🧍 I am mostly self-driven"]},
+ {id:"risk", s:"Part 5: Putting it together", t:"How do you feel about something that could take months before it earns?", type:"single",
+  o:["🌱 Fine, I like building something slowly","📈 Okay, if I can see small signs it is working","😟 It would be hard, I need money sooner","🙅 It would stress me out"]},
+ {id:"worries", s:"Part 5: Putting it together", t:"What worries you most about it?", type:"multi", max:2, none:"Nothing really",
+  o:["😬 Getting things wrong","📝 Too much writing or admin","👶 Not enough time with the baby","💸 Losing money","📱 Technology being confusing","🪞 Not being good enough","Nothing really"]},
+ {id:"dream", s:"Nearly there", t:"If money and time were not a worry, what would you want your everyday life to look like in two years?", hint:"Type it, or use the microphone key on your keyboard.", type:"text"},
+ {id:"other", s:"Nearly there", t:"Anything else you would like us to know?", hint:"There are no wrong answers.", type:"text"}
+];
+const REAL = Q.filter(q => q.type !== "break");
+const partOf = q => { if (q.type === "break") return 2; const m = (q.s || "").match(/^Part (\d)/); return m ? +m[1] : 5; };
+
+// ---------- state
+const load = k => { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } };
+const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
+let st = load(KEY) || {i:-1, a:{}};
+let prefs = Object.assign({fs:18, theme:"soft", easy:false}, load(PKEY) || {});
+let focusKey = null, note = "", animate = false, savedTimer = null;
+
+const $ = id => document.getElementById(id);
+const app = $("app"), navhost = $("navhost");
+const put = (...n) => app.append(...n.flat(Infinity).filter(x => x != null));
+const raf = f => (window.requestAnimationFrame || (g => g()))(f);
+
+function h(tag, props, ...kids) {
+  const e = document.createElement(tag);
+  for (const k in (props || {})) {
+    const v = props[k];
+    if (k === "class") e.className = v;
+    else if (k.startsWith("on")) e.addEventListener(k.slice(2), v);
+    else if (v === true) e.setAttribute(k, "");
+    else if (v !== false && v != null) e.setAttribute(k, v);
+  }
+  for (const c of kids.flat(Infinity)) if (c != null) e.append(c.nodeType ? c : document.createTextNode(c));
+  return e;
+}
+
+const EMO = /^((?:\p{Extended_Pictographic}|\p{Regional_Indicator})(?:\uFE0F|\u200D\p{Extended_Pictographic}|\p{Emoji_Modifier})*)\s+/u;
+const split = t => { const m = t.match(EMO); return m ? [m[1], t.slice(m[0].length)] : ["", t]; };
+const strip = s => (s || "").replace(/^[^\p{L}\p{N}£]+/u, "").trim();
+
+function persist() {
+  save(KEY, st);
+  const s = $("saved"); if (!s) return;
+  s.textContent = "✓ Saved on this device";
+  clearTimeout(savedTimer); savedTimer = setTimeout(() => { s.textContent = ""; }, 2200);
+}
+
+function applyPrefs() {
+  document.documentElement.style.setProperty("--fs", prefs.fs);
+  if (prefs.theme === "soft") document.documentElement.removeAttribute("data-theme");
+  else document.documentElement.setAttribute("data-theme", prefs.theme);
+  document.documentElement.className = prefs.easy ? "easy" : "";
+  ["soft", "light", "dark"].forEach(t => $("th-" + t).setAttribute("aria-pressed", prefs.theme === t ? "true" : "false"));
+  $("tfont").setAttribute("aria-pressed", prefs.easy ? "true" : "false");
+  save(PKEY, prefs);
+}
+
+function go(i) {
+  if (window.speechSynthesis) speechSynthesis.cancel();
+  if (i >= 0) st.last = Math.min(i, Q.length - 1);
+  st.i = i; note = ""; animate = true; persist(); render();
+  window.scrollTo(0, 0);
+}
+
+// ---------- progress + stepper
+function position() {
+  if (st.i < 0) return 0;
+  if (st.i >= Q.length) return REAL.length;
+  return Q.slice(0, st.i + 1).filter(x => x.type !== "break").length;
+}
+function renderProgress() {
+  const box = $("progress"), stepper = $("stepper");
+  const intro = st.i < 0, fin = st.i >= Q.length;
+  const cq = fin ? Q[Q.length - 1] : Q[Math.max(st.i, 0)], curPart = intro ? 0 : fin ? 6 : partOf(cq);
+  box.hidden = intro;
+  const n = position(), total = REAL.length;
+  if (!intro) {
+    const segs = PARTS.map(p => {
+      const inPart = REAL.filter(q => partOf(q) === p.n);
+      const passed = inPart.filter(q => Q.indexOf(q) <= st.i).length;
+      const pct = fin || curPart > p.n ? 100 : curPart === p.n ? Math.round((passed / inPart.length) * 100) : 0;
+      return h("div", {class:"seg"}, h("i", {style:`width:${pct}%`}));
+    });
+    box.replaceChildren(
+      h("div", {class:"prow"}, h("span", {}, fin ? "All parts complete" : `Part ${curPart} of 5 · ${PARTS[curPart - 1].title}`), h("b", {}, `${Math.round((n / total) * 100)}%`)),
+      h("div", {class:"segs", role:"progressbar", "aria-valuemin":0, "aria-valuemax":total, "aria-valuenow":n, "aria-label":"Progress"}, segs));
+  }
+  stepper.replaceChildren(...PARTS.map(p => h("li", {class:fin || curPart > p.n ? "done" : curPart === p.n ? "cur" : ""},
+    h("span", {class:"dot", "aria-hidden":"true"}, fin || curPart > p.n ? "✓" : String(p.n)), p.title)));
+}
+
+// ---------- screens
+function intro() {
+  const resume = Object.keys(st.a).length > 0;
+  put(
+    h("h1", {tabindex:"-1", id:"focus"}, "Let’s find what fits you 👋"),
+    h("p", {}, "A few easy questions about what you want from life, what you are good at, and what could fit together. There are no right or wrong answers."),
+    h("div", {class:"feat"}, h("span", {class:"chip", "aria-hidden":"true"}, "👆"), h("div", {}, h("b", {}, "Just tap"), h("span", {class:"s"}, "Hardly any typing, and every question can be skipped."))),
+    h("div", {class:"feat"}, h("span", {class:"chip", "aria-hidden":"true"}, "⏱️"), h("div", {}, h("b", {}, "About 15 minutes"), h("span", {class:"s"}, "With a break halfway. Stop whenever you like and come back later."))),
+    h("div", {class:"feat"}, h("span", {class:"chip", "aria-hidden":"true"}, "🔒"), h("div", {}, h("b", {}, "Private to you"), h("span", {class:"s"}, "Your answers stay on this device until you choose to share them."))),
+    h("button", {class:"cta", type:"button", onclick:() => go(resume ? (st.last || 0) : 0)},
+      resume ? "Carry on where I left off →" : "Let’s start →"),
+    resume ? h("button", {class:"cta alt", type:"button", onclick:() => { if (confirm("Start again? This clears your answers on this device.")) { st = {i:0, a:{}}; animate = true; persist(); render(); } }}, "Start again") : null
+  );
+}
+
+function breakScreen(q) {
+  const pct = Math.round((REAL.filter(x => Q.indexOf(x) < st.i).length / REAL.length) * 100);
+  put(
+    h("div", {class:"center"},
+      h("div", {class:"ring", style:`--p:${pct}`, role:"img", "aria-label":`${pct} percent done`}, h("span", {}, `${pct}%`)),
+      h("h2", {class:"qtext", tabindex:"-1", id:"focus"}, q.t),
+      h("p", {}, q.body)));
+  navhost.replaceChildren(h("div", {class:"nav"}, h("div", {class:"in"},
+    h("button", {type:"button", onclick:() => go(st.i - 1)}, "← Back"),
+    h("button", {type:"button", class:"stop", onclick:() => go(-1)}, "Stop for now"),
+    h("button", {type:"button", class:"grow", onclick:() => go(st.i + 1)}, "Carry on →"))));
+}
+
+function optBtn(t, props, cls) {
+  const [emo, lab] = split(t);
+  return h("button", Object.assign({class:"opt " + cls, type:"button"}, props),
+    emo ? h("span", {class:"emo", "aria-hidden":"true"}, emo) : null,
+    h("span", {class:"lab"}, lab),
+    h("span", {class:"tick", "aria-hidden":"true"}, "✓"));
+}
+
+const TAGS = {"love/yes":"✨ Sweet spot", "love/help":"🌱 Worth learning", "love/no":"💭 Keen, but a stretch", "fine/yes":"👍 You could do it", "no/yes":"🙅 Could, but not for you", "no/help":"🙅 Not for you", "no/no":"🙅 Not for you"};
+
+function question() {
+  const q = Q[st.i];
+  if (q.type === "break") return breakScreen(q);
+  const a = st.a[q.id], n = position(), total = REAL.length, p = PARTS[partOf(q) - 1];
+  app.append(
+    h("div", {class:"chead"},
+      h("span", {class:"chip", "aria-hidden":"true"}, p.icon),
+      h("div", {class:"ctext"}, h("div", {class:"ctitle"}, p.title), h("div", {class:"csub"}, p.sub)),
+      h("span", {class:"qcount"}, `Question ${n} of ${total}`)),
+    h("h2", {class:"qtext", tabindex:"-1", id:"focus"}, q.t)
+  );
+  if (q.hint) app.append(h("p", {class:"hint"}, q.hint));
+  const pills = [];
+  if (q.type === "single") pills.push(h("span", {class:"pill"}, "Pick one"));
+  if (q.type === "multi") {
+    const cur = (a || []).filter(x => x !== q.none);
+    pills.push(h("span", {class:"pill"}, q.max < 10 ? `Pick up to ${q.max}` : "Tick any that fit"));
+    if (q.max < 10 && cur.length) pills.push(h("span", {class:"pill live"}, `${cur.length} of ${q.max} picked`));
+  }
+  if (q.type === "text") pills.push(h("span", {class:"pill"}, "Optional"));
+  if (pills.length) app.append(h("div", {class:"pills"}, pills));
+
+  if (q.type === "single") {
+    const two = !q.o.some(t => t.length > 44);
+    app.append(h("div", {class:"opts" + (two ? " two" : ""), role:"radiogroup", "aria-label":q.t},
+      q.o.map(t => optBtn(t, {role:"radio", "aria-checked":a === t ? "true" : "false", "data-k":t,
+        onclick:() => { st.a[q.id] = t; persist(); focusKey = t; render(); }}, "single"))));
+  } else if (q.type === "multi") {
+    const cur = a || [], two = !q.o.some(t => t.length > 44);
+    app.append(h("div", {class:"opts" + (two ? " two" : ""), role:"group", "aria-label":q.t},
+      q.o.map(t => {
+        const on = cur.includes(t), blocked = !on && t !== q.none && cur.length >= q.max;
+        return optBtn(t, {role:"checkbox", "aria-checked":on ? "true" : "false", "data-k":t, disabled:blocked,
+          onclick:() => {
+            let c = (st.a[q.id] || []).slice();
+            if (t === q.none) c = on ? [] : [t];
+            else { c = c.filter(x => x !== q.none); if (on) c = c.filter(x => x !== t); else c.push(t); }
+            st.a[q.id] = c; persist(); focusKey = t; render();
+          }}, "multi");
+      })));
+    if (q.max < 10 && cur.filter(x => x !== q.none).length >= q.max)
+      app.append(h("p", {class:"note"}, `That is ${q.max}. Untick one if you want to change something.`));
+  } else if (q.type === "rate") {
+    const sc = SCALES[q.scale], cur = a || {};
+    q.o.forEach((item, idx) => {
+      app.append(h("div", {class:"item", role:"group", "aria-label":item},
+        h("div", {class:"ihead"}, h("p", {}, item)),
+        h("div", {class:"sg", style:"margin-top:.5rem"}, Object.keys(sc).map(k =>
+          h("button", {class:"segbtn", type:"button", "aria-pressed":cur[item] === k ? "true" : "false", "data-k":idx + k,
+            onclick:() => { st.a[q.id] = Object.assign({}, st.a[q.id], {[item]:k}); persist(); focusKey = idx + k; render(); }}, sc[k])))));
+    });
+  } else if (q.type === "dual") {
+    const cur = a || {};
+    q.o.forEach((item, idx) => {
+      const v = cur[item] || {};
+      const set = (field, key) => {
+        const c = Object.assign({}, st.a[q.id]);
+        c[item] = Object.assign({}, c[item], {[field]:key});
+        st.a[q.id] = c; persist(); focusKey = idx + field + key; render();
+      };
+      const grp = (field, scale, label) => [
+        h("div", {class:"slabel"}, label),
+        h("div", {class:"sg"}, Object.keys(scale).map(k =>
+          h("button", {class:"segbtn", type:"button", "aria-pressed":v[field] === k ? "true" : "false", "data-k":idx + field + k, onclick:() => set(field, k)}, scale[k])))
+      ];
+      const tag = v.want && v.can ? TAGS[v.want + "/" + v.can] : null;
+      app.append(h("div", {class:"item", role:"group", "aria-label":item},
+        h("div", {class:"ihead"}, h("p", {}, item), tag ? h("span", {class:"tag"}, tag) : null),
+        grp("want", WANT, "Would I enjoy it?"),
+        grp("can", CAN, "Could I do it?")));
+    });
+  } else {
+    app.append(
+      h("textarea", {id:"txt", maxlength:"500", "aria-label":q.t, placeholder:"Type your answer here…",
+        oninput:e => { const v = e.target.value; st.a[q.id] = v; persist(); const c = $("cnt"); if (c) c.textContent = `${v.length}/500`; }}, a || ""),
+      h("div", {class:"cnt", id:"cnt"}, `${(a || "").length}/500`));
+  }
+  if (note) app.append(h("p", {class:"note"}, note));
+  nav();
+}
+
+function nav() {
+  const last = st.i === Q.length - 1;
+  navhost.replaceChildren(h("div", {class:"nav"}, h("div", {class:"in"},
+    st.i > 0 ? h("button", {type:"button", onclick:() => go(st.i - 1)}, "← Back") : h("button", {type:"button", onclick:() => go(-1)}, "← Start"),
+    h("button", {type:"button", class:"skip", onclick:() => go(st.i + 1)}, "Skip"),
+    h("button", {type:"button", class:"grow", onclick:() => go(st.i + 1)}, last ? "Finish ✓" : "Continue →"))));
+}
+
+// ---------- export
+function fmt(q, a) {
+  if (q.type === "rate") {
+    const sc = SCALES[q.scale], e = Object.keys(a || {});
+    return e.length ? e.map(k => `${k} = ${strip(sc[a[k]])}`).join("; ") : "(skipped)";
+  }
+  if (q.type === "dual") {
+    const e = Object.keys(a || {});
+    return e.length ? e.map(k => `${k} = enjoy: ${strip(WANT[(a[k] || {}).want]) || "?"} / could do: ${strip(CAN[(a[k] || {}).can]) || "?"}`).join("; ") : "(skipped)";
+  }
+  if (q.type === "multi") return a && a.length ? a.map(strip).join("; ") : "(skipped)";
+  if (q.type === "single") return a ? strip(a) : "(skipped)";
+  return a ? a.replace(/\s+/g, " ").trim() : "(skipped)";
+}
+
+function highlights() {
+  const merge = ids => Object.assign({}, ...ids.map(id => st.a[id] || {}));
+  const skills = merge(["s_tech", "s_people", "s_creative", "s_organise"]);
+  const work = merge(["d_work1", "d_work2", "d_work3"]);
+  const by = (o, v) => Object.keys(o).filter(k => o[k] === v);
+  const wk = f => Object.keys(work).filter(k => f(work[k] || {}));
+  return {
+    confident: by(skills, "expert"), help: by(skills, "help"), never: by(skills, "never"),
+    sweet: wk(w => w.want === "love" && w.can === "yes"),
+    growth: wk(w => w.want === "love" && w.can === "help"),
+    keenNotAble: wk(w => w.want === "love" && w.can === "no"),
+    canButNo: wk(w => w.want === "no" && w.can === "yes"),
+    no: wk(w => w.want === "no")
+  };
+}
+
+function buildText() {
+  const d = new Date().toLocaleDateString("en-GB"), hl = highlights();
+  const L = [`INTERVIEW RESULTS, ${d}`, ""];
+  const add = (label, arr) => { if (arr && arr.length) L.push(`${label}: ${arr.join("; ")}`); };
+  const one = id => { const q = REAL.find(x => x.id === id), a = st.a[id]; return a && a.length ? [fmt(q, a)] : []; };
+  L.push("WHERE WANT AND CAN OVERLAP");
+  add("Sweet spot (would love it AND could do it)", hl.sweet);
+  add("Would love it, needs help", hl.growth);
+  add("Would love it, but not really able", hl.keenNotAble);
+  add("Could do it, but not keen", hl.canButNo);
+  add("Would rather not do", hl.no);
+  L.push("", "SKILLS SELF-RATING");
+  add("Very confident at", hl.confident); add("Would need help with", hl.help); add("Never tried", hl.never);
+  L.push("", "GOALS AND MOTIVATION");
+  add("Life goals", one("life_goals")); add("Ten-year picture", one("ten_year")); add("Ideal day", one("ideal_day"));
+  add("Picture that appealed", one("scenario")); add("Non-negotiables", one("non_neg"));
+  L.push("", "FULL ANSWERS", "");
+  let sec = "";
+  Q.forEach(q => {
+    if (q.type === "break") return;
+    if (q.s !== sec) { sec = q.s; L.push(`## ${sec}`); }
+    L.push(`[${q.id}] ${q.t}`, `   ${fmt(q, st.a[q.id])}`);
+  });
+  return L.join("\n");
+}
+
+function done() {
+  navhost.replaceChildren();
+  const hl = highlights(), pick = id => (st.a[id] && st.a[id].length ? [].concat(st.a[id]).map(strip) : []);
+  const groups = [
+    ["Best fit: you would love it and could do it", hl.sweet],
+    ["You would love to learn", hl.growth],
+    ["What matters most to you", pick("life_goals")],
+    ["You are very confident at", hl.confident.slice(0, 6)],
+    ["What motivates you", pick("motivators")]
+  ].filter(g => g[1].length);
+  const text = buildText();
+  put(
+    h("div", {class:"center"}, h("div", {class:"chip", style:"width:4rem;height:4rem;font-size:2rem;margin:0 auto .6rem", "aria-hidden":"true"}, "🎉")),
+    h("h1", {class:"center", tabindex:"-1", id:"focus"}, "All done. Thank you! 🎉"),
+    h("p", {class:"center"}, "That was really helpful. Here is a quick picture of what you told us:"),
+    groups.length ? groups.map(g => h("div", {class:"sumgrp"}, h("b", {}, g[0]), g[1].map(x => h("span", {class:"chipl"}, x)))) : h("p", {class:"small center"}, "(You skipped most of the questions, which is fine.)"),
+    h("div", {class:"priv"}, h("span", {"aria-hidden":"true"}, "🔒"), h("span", {}, "Nothing has been sent yet. Choose one way below to send your answers to Matthew.")),
+    h("button", {class:"cta", type:"button", onclick:async e => { try { await navigator.clipboard.writeText(text); } catch (x) { const t = h("textarea", {}, text); document.body.append(t); t.select(); document.execCommand("copy"); t.remove(); } e.target.textContent = "✓ Copied. Now paste it into a message"; }}, "📋 Copy my answers"),
+    navigator.share ? h("button", {class:"cta alt", type:"button", onclick:() => navigator.share({title:"My answers", text}).catch(() => {})}, "📤 Share…") : null,
+    h("button", {class:"cta alt", type:"button", onclick:() => { const u = URL.createObjectURL(new Blob([text], {type:"text/plain"})); const a = h("a", {href:u, download:`my-answers-${new Date().toISOString().slice(0, 10)}.txt`}); document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 1000); }}, "💾 Save as a file"),
+    h("details", {}, h("summary", {}, "See exactly what will be sent"), h("pre", {id:"export"}, text)),
+    h("button", {class:"cta alt", type:"button", onclick:() => go(Q.length - 1)}, "← Back to the questions")
+  );
+}
+
+function render() {
+  app.replaceChildren();
+  app.className = "card";
+  if (st.i < 0) { navhost.replaceChildren(); intro(); }
+  else if (st.i >= Q.length) done();
+  else question();
+  renderProgress();
+  if (animate) { animate = false; raf(() => { app.className = "card enter"; }); }
+  const f = focusKey ? app.querySelector(`[data-k="${CSS.escape(String(focusKey))}"]`) : $("focus");
+  if (f) f.focus({preventScroll:!!focusKey});
+  focusKey = null;
+}
+
+// ---------- display settings
+let popOpen = false;
+const setPop = v => { popOpen = v; $("settings").hidden = !v; $("tset").setAttribute("aria-expanded", v ? "true" : "false"); };
+$("tset").onclick = () => setPop(!popOpen);
+$("tclose").onclick = () => setPop(false);
+$("tsm").onclick = () => { prefs.fs = Math.max(14, prefs.fs - 2); applyPrefs(); };
+$("tlg").onclick = () => { prefs.fs = Math.min(28, prefs.fs + 2); applyPrefs(); };
+["soft", "light", "dark"].forEach(t => { $("th-" + t).onclick = () => { prefs.theme = t; applyPrefs(); }; });
+$("tfont").onclick = () => { prefs.easy = !prefs.easy; applyPrefs(); };
+if (window.speechSynthesis) {
+  $("tsp").hidden = false;
+  $("tsp").onclick = () => {
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(app.innerText.replace(/[\u{1F000}-\u{1FFFF}\u2600-\u27BF]/gu, ""));
+    u.lang = "en-GB"; speechSynthesis.speak(u);
+  };
+}
+applyPrefs();
+animate = true;
+render();
+window.__interview = {Q, st:() => st, buildText, split};
+})();
+</script>
+</body>
+</html>
